@@ -10,8 +10,15 @@ const getUsers = (req, res) => {
   try {
     const users = User.find();
     res.json(users);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    console.error(err);
+    if (err.name === "notFoundError") {
+      return res.status(NOT_FOUND_ERROR).send({ message: "Users not found" });
+    } else {
+      return res
+        .status(SERVER_ERROR)
+        .send({ message: "An error has occurred on the server" });
+    }
   }
 };
 
@@ -22,30 +29,42 @@ const getUser = (req, res) => {
     if (user) {
       res.json(user);
     } else {
-      res.status(404).json({ message: "User not found" });
+      res.status(NOT_FOUND_ERROR).send({ message: "User not found" });
     }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(SERVER_ERROR)
+      .send({ message: "An error has occurred on the server" });
   }
 };
 
 // Create a new user
 const createUser = (req, res) => {
-  const { name, avatar } = req.body;
+  const { name, avatar } = req.body || {};
 
   if (!name || !avatar) {
     return res
       .status(INVALID_DATA_ERROR)
-      .json({ message: "Name and avatar are required" });
+      .send({ message: "Name and avatar are required" });
   }
 
-  try {
-    const user = new User({ name, avatar });
-    user.save();
-    return res.status(201).json(user);
-  } catch (error) {
-    return res.status(400).json({ message: error.message });
-  }
+  User.create({ name, avatar })
+    .then((newUser) => {
+      return res.status(201).send(newUser);
+    })
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "ValidationError") {
+        return res
+          .status(INVALID_DATA_ERROR)
+          .send({ message: "Invalid data provided" });
+      } else {
+        return res
+          .status(SERVER_ERROR)
+          .send({ message: "An error has occurred on the server" });
+      }
+    });
 };
 
 module.exports = {

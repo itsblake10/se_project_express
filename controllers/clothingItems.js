@@ -1,24 +1,35 @@
 const ClothingItem = require("../models/clothingItem");
+const {
+  INVALID_DATA_ERROR,
+  NOT_FOUND_ERROR,
+  SERVER_ERROR,
+} = require("../utils/errors");
 
 // Get all clothing items
 const getClothingItems = (req, res) => {
   try {
     const items = ClothingItem.find();
     res.json(items);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    console.error(err);
+    if (err.name === "notFoundError") {
+      return res.status(NOT_FOUND_ERROR).send({ message: "Items not found" });
+    } else {
+      return res
+        .status(SERVER_ERROR)
+        .send({ message: "An error has occurred on the server" });
+    }
   }
 };
 
 // Create new clothing item
 const createNewClothingItem = (req, res) => {
-  console.log(req.user._id);
-  const { name, weather, imageUrl, ownerId } = req.body;
+  const { name, weather, imageUrl, ownerId } = req.body || {};
 
   if (!name || !weather || !imageUrl || !ownerId) {
     return res
-      .status(400)
-      .json({ message: "Name, weather, imageUrl, and ownerId are required" });
+      .status(INVALID_DATA_ERROR)
+      .send({ message: "Name, weather, imageUrl, and ownerId are required" });
   }
 
   const item = new ClothingItem({
@@ -30,9 +41,18 @@ const createNewClothingItem = (req, res) => {
 
   try {
     const newItem = item.save();
-    return res.status(201).json(newItem); // Explicitly return the response
-  } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return res.status(201).json(newItem);
+  } catch (err) {
+    console.error(err);
+    if (err.name === "ValidationError") {
+      return res
+        .status(INVALID_DATA_ERROR)
+        .send({ message: "Invalid data provided" });
+    } else {
+      return res
+        .status(SERVER_ERROR)
+        .send({ message: "An error has occurred on the server" });
+    }
   }
 };
 
@@ -42,12 +62,18 @@ const deleteClothingItem = (req, res) => {
     const deletedItem = ClothingItem.findByIdAndDelete(req.params.itemId);
     if (deletedItem) {
       res.json({ message: "Item deleted successfully" });
-    } else {
-      res.status(404).json({ message: "Item not found" });
     }
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    console.error(err);
+    if (err.name === "notFoundError") {
+      return res.status(NOT_FOUND_ERROR).send({ message: "Item not found" });
+    } else {
+      return res
+        .status(SERVER_ERROR)
+        .send({ message: "An error has occurred on the server" });
+    }
   }
+  res.status(500).json({ message: error.message });
 };
 
 module.exports = {
