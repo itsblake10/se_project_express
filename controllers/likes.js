@@ -1,3 +1,6 @@
+const ClothingItem = require("../models/clothingItem");
+const { NOT_FOUND_ERROR, SERVER_ERROR } = require("../utils/errors");
+
 // Like Item
 const likeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
@@ -7,22 +10,23 @@ const likeItem = (req, res) => {
     },
     { new: true },
   )
+    .orFail()
     .then((updatedItem) => {
-      if (!updatedItem) {
-        return res.status(NOT_FOUND_ERROR).send({ message: "Item not found" });
-      }
-      res.json({ message: "Item liked successfully" });
-    })
-    .catch((err) => {
-      console.error(err);
-      if (err.name === "ValidationError") {
-        return res
-          .status(INVALID_DATA_ERROR)
-          .send({ message: "Invalid data provided" });
-      }
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
+      res
+        .send({
+          message: `Item with ID ${updatedItem._id} liked successfully`,
+        })
+        .catch((err) => {
+          console.error(err);
+          if (err.name === "DocumentNotFoundError") {
+            return res
+              .status(NOT_FOUND_ERROR)
+              .send({ message: "Item not found" });
+          }
+          return res
+            .status(SERVER_ERROR)
+            .send({ message: "An error has occurred on the server" });
+        });
     });
 };
 
@@ -33,7 +37,7 @@ const dislikeItem = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(() => ({ name: "DocumentNotFoundError" }))
+    .orFail()
     .then((updatedItem) => {
       res.json({
         message: `Item with ID ${updatedItem._id} disliked successfully`,
@@ -48,4 +52,9 @@ const dislikeItem = (req, res) => {
         .status(SERVER_ERROR)
         .send({ message: "An error has occurred on the server" });
     });
+};
+
+module.exports = {
+  likeItem,
+  dislikeItem,
 };

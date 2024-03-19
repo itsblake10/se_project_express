@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { likeItem, dislikeItem } = require("../controllers/users");
+const { likeItem, dislikeItem } = require("../controllers/likes");
 
 // Add Like
 router.put("/items/:itemId/likes", likeItem);
