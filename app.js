@@ -13,7 +13,7 @@ app.use(express.json());
 
 app.use("/", router);
 
-//Authorisation middleware
+// Authorisation middleware
 app.use((req, res, next) => {
   req.user = {
     _id: "65f19ad5bfecef41a4bc6aef",

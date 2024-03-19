@@ -8,17 +8,16 @@ const {
 // Get all clothing items
 const getClothingItems = (req, res) => {
   try {
-    const items = ClothingItem.find();
+    const items = ClothingItem.find().orFail();
     res.json(items);
   } catch (err) {
     console.error(err);
     if (err.name === "notFoundError") {
       return res.status(NOT_FOUND_ERROR).send({ message: "Items not found" });
-    } else {
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
     }
+    return res
+      .status(SERVER_ERROR)
+      .send({ message: "An error has occurred on the server" });
   }
 };
 
@@ -48,32 +47,29 @@ const createNewClothingItem = (req, res) => {
       return res
         .status(INVALID_DATA_ERROR)
         .send({ message: "Invalid data provided" });
-    } else {
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
     }
+    return res
+      .status(SERVER_ERROR)
+      .send({ message: "An error has occurred on the server" });
   }
 };
 
 // Delete clothing item
 const deleteClothingItem = (req, res) => {
-  try {
-    const deletedItem = ClothingItem.findByIdAndDelete(req.params.itemId);
-    if (deletedItem) {
-      res.json({ message: "Item deleted successfully" });
-    }
-  } catch (err) {
-    console.error(err);
-    if (err.name === "notFoundError") {
-      return res.status(NOT_FOUND_ERROR).send({ message: "Item not found" });
-    } else {
+  ClothingItem.findByIdAndDelete(req.params.itemId)
+    .orFail()
+    .then((deletedItem) => {
+      res.json({ message: `Item: ${deletedItem} deleted successfully` });
+    })
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND_ERROR).send({ message: "Item not found" });
+      }
       return res
         .status(SERVER_ERROR)
         .send({ message: "An error has occurred on the server" });
-    }
-  }
-  res.status(500).json({ message: error.message });
+    });
 };
 
 module.exports = {
