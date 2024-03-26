@@ -6,9 +6,13 @@ const users = require("./users");
 
 const clothingItems = require("./clothingItems");
 
+const likes = require("./likes");
+
 router.use("/users", users);
 
-router.use("/clothingItems", clothingItems);
+router.use("/", clothingItems);
+
+router.use("/", likes);
 
 // Handle non-existent resource
 router.use((req, res) => {

@@ -6,12 +6,12 @@ const {
 } = require("../controllers/clothingItems");
 
 // Returns all clothing items
-router.get("/clothingItems", getClothingItems);
+router.get("/items", getClothingItems);
 
 // Creates a new clothing item
-router.post("/clothingItems", createNewClothingItem);
+router.post("/items", createNewClothingItem);
 
 // Deletes a clothing item
-router.delete("/users", deleteClothingItem);
+router.delete("/items/:itemId", deleteClothingItem);
 
 module.exports = router;

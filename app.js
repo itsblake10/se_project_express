@@ -11,8 +11,6 @@ mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db");
 
 app.use(express.json());
 
-app.use("/", router);
-
 // Authorisation middleware
 app.use((req, res, next) => {
   req.user = {
@@ -20,6 +18,8 @@ app.use((req, res, next) => {
   };
   next();
 });
+
+app.use("/", router);
 
 app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`);

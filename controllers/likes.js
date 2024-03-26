@@ -6,27 +6,24 @@ const likeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     {
-      $addToSet: { likes: req.user._id },
+      $addToSet: { likes: req.user.userId },
     },
     { new: true },
   )
     .orFail()
     .then((updatedItem) => {
-      res
-        .send({
-          message: `Item with ID ${updatedItem._id} liked successfully`,
-        })
-        .catch((err) => {
-          console.error(err);
-          if (err.name === "DocumentNotFoundError") {
-            return res
-              .status(NOT_FOUND_ERROR)
-              .send({ message: "Item not found" });
-          }
-          return res
-            .status(SERVER_ERROR)
-            .send({ message: "An error has occurred on the server" });
-        });
+      res.send({
+        message: `Item with ID ${updatedItem._id} liked successfully`,
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND_ERROR).send({ message: "Item not found" });
+      }
+      return res
+        .status(SERVER_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
