@@ -55,16 +55,26 @@ const createNewClothingItem = (req, res) => {
 
 // Delete clothing item
 const deleteClothingItem = (req, res) => {
-  ClothingItem.findByIdAndDelete(req.params._id)
+  if (!req.params.itemId) {
+    return res.status(INVALID_DATA_ERROR).send({ message: "Invalid Data" });
+  }
+
+  ClothingItem.findByIdAndDelete(req.params.itemId)
     .orFail()
     .then((deletedItem) => {
-      res.json({ message: `Item: ${deletedItem} deleted successfully` });
+      if (!deletedItem) {
+        return res.status(NOT_FOUND_ERROR).send({ message: "Item not found" });
+      }
+      return res.json({
+        message: `Item: ${deletedItem._id} deleted successfully`,
+      });
     })
     .catch((err) => {
       console.error(err);
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND_ERROR).send({ message: "Item not found" });
+      if (err.name === "CastError") {
+        return res.status(NOT_FOUND_ERROR).send({ message: "Invalid item ID" });
       }
+      // For other errors, return a generic server error
       return res
         .status(SERVER_ERROR)
         .send({ message: "An error has occurred on the server" });

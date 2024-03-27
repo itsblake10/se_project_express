@@ -8,7 +8,7 @@ const clothingItems = require("./clothingItems");
 
 const likes = require("./likes");
 
-router.use("/users", users);
+router.use("/", users);
 
 router.use("/", clothingItems);
 
