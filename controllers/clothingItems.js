@@ -60,7 +60,6 @@ const deleteClothingItem = (req, res) => {
   }
 
   ClothingItem.findByIdAndDelete(req.params.itemId)
-    .orFail()
     .then((deletedItem) => {
       if (!deletedItem) {
         return res.status(NOT_FOUND_ERROR).send({ message: "Item not found" });
@@ -71,8 +70,13 @@ const deleteClothingItem = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND_ERROR).send({ message: "Item not found" });
+      }
       if (err.name === "CastError") {
-        return res.status(NOT_FOUND_ERROR).send({ message: "Invalid item ID" });
+        return res
+          .status(INVALID_DATA_ERROR)
+          .send({ message: "Invalid item ID" });
       }
       // For other errors, return a generic server error
       return res

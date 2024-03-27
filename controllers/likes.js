@@ -1,5 +1,9 @@
 const ClothingItem = require("../models/clothingItem");
-const { NOT_FOUND_ERROR, SERVER_ERROR } = require("../utils/errors");
+const {
+  NOT_FOUND_ERROR,
+  SERVER_ERROR,
+  INVALID_DATA_ERROR,
+} = require("../utils/errors");
 
 // Like Item
 const likeItem = (req, res) => {
@@ -20,6 +24,11 @@ const likeItem = (req, res) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND_ERROR).send({ message: "Item not found" });
+      }
+      if (err.name === "CastError") {
+        return res
+          .status(INVALID_DATA_ERROR)
+          .send({ message: "Invalid item ID" });
       }
       return res
         .status(SERVER_ERROR)
@@ -44,6 +53,11 @@ const dislikeItem = (req, res) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND_ERROR).send({ message: "Item not found" });
+      }
+      if (err.name === "CastError") {
+        return res
+          .status(INVALID_DATA_ERROR)
+          .send({ message: "Invalid item ID" });
       }
       return res
         .status(SERVER_ERROR)
