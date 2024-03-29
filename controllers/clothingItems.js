@@ -64,8 +64,16 @@ const deleteClothingItem = (req, res) => {
       if (!deletedItem) {
         return res.status(NOT_FOUND_ERROR).send({ message: "Item not found" });
       }
-      return res.json({
-        message: `Item: ${deletedItem._id} deleted successfully`,
+      return ClothingItem.find().then((items) => {
+        const isDeleted = !items.find((item) => item._id === deletedItem._id);
+        if (isDeleted) {
+          return res.json({
+            message: `Item: ${deletedItem._id} deleted successfully`,
+          });
+        }
+        return res
+          .status(SERVER_ERROR)
+          .send({ message: "Item deletion failed" });
       });
     })
     .catch((err) => {
