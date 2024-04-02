@@ -8,12 +8,7 @@ const {
 // Get all clothing items
 const getClothingItems = (req, res) => {
   ClothingItem.find()
-    .then((items) => {
-      if (!items.length) {
-        return res.status(NOT_FOUND_ERROR).send({ message: "Items not found" });
-      }
-      return res.json(items);
-    })
+    .then((items) => res.json(items))
     .catch((err) => {
       console.error(err);
       return res
@@ -26,19 +21,13 @@ const getClothingItems = (req, res) => {
 const createNewClothingItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
 
-  if (!name || !weather || !imageUrl) {
-    return res
-      .status(INVALID_DATA_ERROR)
-      .send({ message: "Name, weather, and imageUrl are required" });
-  }
-
   if (name.length < 2 || name.length > 30) {
     return res
       .status(INVALID_DATA_ERROR)
       .json({ message: "Name must be between 2 and 30 characters long" });
   }
 
-  return ClothingItem.create({ name, weather, imageUrl })
+  return ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((newItem) => res.status(201).json(newItem))
     .catch((err) => {
       console.error(err);
@@ -58,22 +47,13 @@ const deleteClothingItem = (req, res) => {
   if (!req.params.itemId) {
     return res.status(INVALID_DATA_ERROR).send({ message: "Invalid Data" });
   }
-
   return ClothingItem.findByIdAndDelete(req.params.itemId)
     .then((deletedItem) => {
       if (!deletedItem) {
         return res.status(NOT_FOUND_ERROR).send({ message: "Item not found" });
       }
-      return ClothingItem.find().then((items) => {
-        const isDeleted = !items.find((item) => item._id === deletedItem._id);
-        if (isDeleted) {
-          return res.json({
-            message: `Item: ${deletedItem._id} deleted successfully`,
-          });
-        }
-        return res
-          .status(SERVER_ERROR)
-          .send({ message: "Item deletion failed" });
+      return res.json({
+        message: `Item: ${deletedItem._id} deleted successfully`,
       });
     })
     .catch((err) => {

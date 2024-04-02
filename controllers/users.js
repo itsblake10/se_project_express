@@ -8,12 +8,7 @@ const {
 // Get all users
 const getUsers = (req, res) => {
   User.find()
-    .then((users) => {
-      if (!users.length) {
-        return res.status(NOT_FOUND_ERROR).send({ message: "Users not found" });
-      }
-      return res.json(users);
-    })
+  .then((users) => res.json(users))
     .catch((err) => {
       console.error(err);
       return res
@@ -45,13 +40,7 @@ const getUser = (req, res) => {
 
 // Create a new user
 const createUser = (req, res) => {
-  const { name, avatar } = req.body || {};
-
-  if (!name || !avatar) {
-    return res
-      .status(INVALID_DATA_ERROR)
-      .send({ message: "Name and avatar are required" });
-  }
+  const { name, avatar } = req.body;
 
   return User.create({ name, avatar })
     .then((newUser) => res.status(201).send(newUser))
