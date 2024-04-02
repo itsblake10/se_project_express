@@ -21,12 +21,6 @@ const getClothingItems = (req, res) => {
 const createNewClothingItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
 
-  if (name.length < 2 || name.length > 30) {
-    return res
-      .status(INVALID_DATA_ERROR)
-      .json({ message: "Name must be between 2 and 30 characters long" });
-  }
-
   return ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((newItem) => res.status(201).json(newItem))
     .catch((err) => {
