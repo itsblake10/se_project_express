@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 
 const router = require("./routes");
 
+const { login, createUser } = require("./controllers/users");
+
 const app = express();
 const { PORT = 3001 } = process.env;
 
@@ -11,15 +13,12 @@ mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db");
 
 app.use(express.json());
 
-// Authorisation middleware
-app.use((req, res, next) => {
-  req.user = {
-    _id: "65f19ad5bfecef41a4bc6aef",
-  };
-  next();
-});
-
 app.use("/", router);
+
+//Login and Signup Routes
+app.post("/signin", authMiddleware, login);
+
+app.post("/signup", authMiddleware, createUser);
 
 app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`);

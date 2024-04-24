@@ -41,6 +41,19 @@ const deleteClothingItem = (req, res) => {
   if (!req.params.itemId) {
     return res.status(INVALID_DATA_ERROR).send({ message: "Invalid Data" });
   }
+
+  ClothingItem.findById(itemId).then((item) => {
+    if (!item) {
+      return res.status(NOT_FOUND_ERROR).send({ message: "Item not found" });
+    }
+
+    if (item.owner._id.toString() !== req.user._id.toString()) {
+      return res.status(403).send({
+        message: "Forbidden: You cannot delete items added by other users",
+      });
+    }
+  });
+
   return ClothingItem.findByIdAndDelete(req.params.itemId)
     .then((deletedItem) => {
       if (!deletedItem) {

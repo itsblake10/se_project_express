@@ -4,9 +4,10 @@ const {
   createNewClothingItem,
   deleteClothingItem,
 } = require("../controllers/clothingItems");
+const { authMiddleware } = require("../middlewares/auth");
 
 // Returns all clothing items
-router.get("/items", getClothingItems);
+router.get("/items", authMiddleware, getClothingItems);
 
 // Creates a new clothing item
 router.post("/items", createNewClothingItem);
