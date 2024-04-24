@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 
 const router = require("./routes");
 
+const cors = require("cors");
+
 const { login, createUser } = require("./controllers/users");
 
 const app = express();
@@ -15,10 +17,13 @@ app.use(express.json());
 
 app.use("/", router);
 
-//Login and Signup Routes
+//###Login and Signup Routes
 app.post("/signin", authMiddleware, login);
 
 app.post("/signup", authMiddleware, createUser);
+
+//###
+app.use(cors());
 
 app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`);

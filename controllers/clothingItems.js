@@ -3,6 +3,7 @@ const {
   INVALID_DATA_ERROR,
   NOT_FOUND_ERROR,
   SERVER_ERROR,
+  FORBIDDEN_ERROR,
 } = require("../utils/errors");
 
 // Get all clothing items
@@ -48,7 +49,7 @@ const deleteClothingItem = (req, res) => {
     }
 
     if (item.owner._id.toString() !== req.user._id.toString()) {
-      return res.status(403).send({
+      return res.status(FORBIDDEN_ERROR).send({
         message: "Forbidden: You cannot delete items added by other users",
       });
     }
