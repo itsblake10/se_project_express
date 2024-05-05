@@ -3,6 +3,7 @@ const UNAUTHORIZED_ERROR = 401;
 const NOT_FOUND_ERROR = 404;
 const SERVER_ERROR = 500;
 const FORBIDDEN_ERROR = 403;
+const CONFLICT_ERROR = 409;
 
 module.exports = {
   INVALID_DATA_ERROR,
@@ -10,4 +11,5 @@ module.exports = {
   NOT_FOUND_ERROR,
   SERVER_ERROR,
   FORBIDDEN_ERROR,
+  CONFLICT_ERROR,
 };
