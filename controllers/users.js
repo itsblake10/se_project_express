@@ -87,7 +87,7 @@ const login = (req, res) => {
   const { email, password } = req.body;
 
   User.findUserByCredentials(email, password)
-    // .select("+password")
+    .select("+password")
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
@@ -107,11 +107,6 @@ const login = (req, res) => {
           .status(UNAUTHORIZED_ERROR)
           .json({ message: "Incorrect email or password" });
       }
-      if (err.message === "Not a valid password") {
-        return res
-          .status(INVALID_DATA_ERROR)
-          .send({ message: "Not a valid password" });
-      }
       return res
         .status(SERVER_ERROR)
         .json({ message: "An error has occurred on the server" });
@@ -123,6 +118,7 @@ const getCurrentUser = (req, res) => {
   const userId = req.user._id;
 
   User.findById(userId)
+    .orFail()
     .then((user) => {
       if (!user) {
         return res.status(NOT_FOUND_ERROR).send({ message: "User not found" });
@@ -141,7 +137,6 @@ const getCurrentUser = (req, res) => {
 const updateUserProfile = (req, res) => {
   const { name, avatar } = req.body;
   const userId = req.user._id;
-  // console.log(req.user);
 
   const updateFields = {};
   if (name) updateFields.name = name;

@@ -14,7 +14,8 @@ const authMiddleware = (req, res, next) => {
   }
 
   const token = authorization.replace("Bearer ", "");
-  console.log(token);
+  console.log("Received token:", token);
+
   let payload;
 
   try {
@@ -25,8 +26,8 @@ const authMiddleware = (req, res, next) => {
       .status(UNAUTHORIZED_ERROR)
       .send({ message: "Authorization Required" });
   }
-
   req.user = payload;
+
   return next();
 };
 
