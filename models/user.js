@@ -43,7 +43,7 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials(
   password,
 ) {
   return this.findOne({ email })
-    .exec()
+    .select("+password")
     .then((user) => {
       if (!user) {
         throw new Error("Email does not exist");

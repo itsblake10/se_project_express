@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const ClothingItem = require("../models/clothingItem");
 const {
   INVALID_DATA_ERROR,
@@ -39,8 +40,10 @@ const createNewClothingItem = (req, res) => {
 
 // NEW Delete clothing item
 const deleteClothingItem = (req, res) => {
-  if (!req.params.itemId) {
-    return res.status(INVALID_DATA_ERROR).send({ message: "Invalid Data" });
+  const { itemId } = req.params;
+
+  if (!itemId || !mongoose.isValidObjectId(itemId)) {
+    return res.status(INVALID_DATA_ERROR).send({ message: "Invalid item ID" });
   }
 
   return ClothingItem.findById(req.params.itemId)

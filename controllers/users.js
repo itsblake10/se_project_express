@@ -87,12 +87,11 @@ const login = (req, res) => {
   const { email, password } = req.body;
 
   User.findUserByCredentials(email, password)
-    .select("+password")
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-
+      console.log(token);
       res.json({ message: "Logged in successfully", token });
     })
     .catch((err) => {
@@ -102,6 +101,13 @@ const login = (req, res) => {
           .status(INVALID_DATA_ERROR)
           .json({ message: "Email does not exist" });
       }
+
+      if (err.message === "Not a valid password") {
+        return res
+          .status(INVALID_DATA_ERROR)
+          .json({ message: "Not a valid password" });
+      }
+
       if (err.message === "Incorrect email or password") {
         return res
           .status(UNAUTHORIZED_ERROR)
@@ -136,6 +142,7 @@ const getCurrentUser = (req, res) => {
 // NEW Update user profile
 const updateUserProfile = (req, res) => {
   const { name, avatar } = req.body;
+  console.log(req.user);
   const userId = req.user._id;
 
   const updateFields = {};
