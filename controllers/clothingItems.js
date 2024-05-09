@@ -71,11 +71,6 @@ const deleteClothingItem = (req, res) => {
         })
         .catch((err) => {
           console.error(err);
-          if (err.name === "DocumentNotFoundError") {
-            return res
-              .status(NOT_FOUND_ERROR)
-              .send({ message: "Item not found" });
-          }
           if (err.name === "CastError") {
             return res
               .status(INVALID_DATA_ERROR)
