@@ -65,7 +65,7 @@ const login = (req, res) => {
       console.error(err);
       if (err.message === "Email does not exist") {
         return res
-          .status(UNAUTHORIZED_ERROR)
+          .status(INVALID_DATA_ERROR)
           .json({ message: "Email does not exist" });
       }
 
