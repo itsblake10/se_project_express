@@ -58,14 +58,13 @@ const login = (req, res) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
       });
-      console.log(token);
       res.json({ message: "Logged in successfully", token });
     })
     .catch((err) => {
       console.error(err);
       if (err.message === "Email does not exist") {
         return res
-          .status(INVALID_DATA_ERROR)
+          .status(UNAUTHORIZED_ERROR)
           .json({ message: "Email does not exist" });
       }
 
