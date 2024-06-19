@@ -1,4 +1,3 @@
-// NEW
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
@@ -11,9 +10,10 @@ const {
   CONFLICT_ERROR,
 } = require("../utils/errors");
 
-// NEW Create a new user
+// Create a new user
 const createUser = (req, res) => {
   const { name, avatar, email, password: plainPassword } = req.body;
+  console.log(req.body);
   bcrypt
     .hash(plainPassword, 10)
     .then((hashedPassword) =>
@@ -49,7 +49,7 @@ const createUser = (req, res) => {
     });
 };
 
-// NEW Login
+// Login
 const login = (req, res) => {
   const { email, password } = req.body;
 
@@ -85,7 +85,7 @@ const login = (req, res) => {
     });
 };
 
-// NEW Get current user
+// Get current user
 const getCurrentUser = (req, res) => {
   const userId = req.user._id;
 
@@ -105,7 +105,7 @@ const getCurrentUser = (req, res) => {
     });
 };
 
-// NEW Update user profile
+// Update user profile
 const updateUserProfile = (req, res) => {
   const { name, avatar } = req.body;
   console.log(req.user);

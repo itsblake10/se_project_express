@@ -16,9 +16,7 @@ const likeItem = (req, res) => {
   )
     .orFail()
     .then((updatedItem) => {
-      res.send({
-        message: `Item with ID ${updatedItem._id} liked successfully`,
-      });
+      res.json(updatedItem);
     })
     .catch((err) => {
       console.error(err);

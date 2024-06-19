@@ -38,7 +38,7 @@ const createNewClothingItem = (req, res) => {
     });
 };
 
-// NEW Delete clothing item
+// Delete clothing item
 const deleteClothingItem = (req, res) => {
   const { itemId } = req.params;
 
