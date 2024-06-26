@@ -5,7 +5,7 @@ const {
   INVALID_DATA_ERROR,
 } = require("../utils/errors");
 
-// Like Item
+// Like Item UPDATE##
 const likeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
@@ -34,7 +34,7 @@ const likeItem = (req, res) => {
     });
 };
 
-// Dislike Item
+// Dislike Item UPDATE##
 const dislikeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
@@ -43,9 +43,7 @@ const dislikeItem = (req, res) => {
   )
     .orFail()
     .then((updatedItem) => {
-      res.json({
-        message: `Item with ID ${updatedItem._id} disliked successfully`,
-      });
+      res.json(updatedItem);
     })
     .catch((err) => {
       console.error(err);
