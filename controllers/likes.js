@@ -1,11 +1,13 @@
 const ClothingItem = require("../models/clothingItem");
-const {
-  NOT_FOUND_ERROR,
-  SERVER_ERROR,
-  INVALID_DATA_ERROR,
-} = require("../utils/errors");
+// const {
+//   NOT_FOUND_ERROR,
+//   SERVER_ERROR,
+//   INVALID_DATA_ERROR,
+// } = require("../utils/errors");
+const NotFoundError = require("../utils/errors/not-found-error");
+const BadRequestError = require("../utils/errors/bad-request-error");
 
-// Like Item UPDATE##
+// Like Item
 const likeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
@@ -21,20 +23,16 @@ const likeItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND_ERROR).send({ message: "Item not found" });
+        next(new NotFoundError("Item not found"));
+      } else if (err.name === "CastError") {
+        next(new BadRequestError("Invalid item ID"));
+      } else {
+        next(err);
       }
-      if (err.name === "CastError") {
-        return res
-          .status(INVALID_DATA_ERROR)
-          .send({ message: "Invalid item ID" });
-      }
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
     });
 };
 
-// Dislike Item UPDATE##
+// Dislike Item
 const dislikeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
@@ -48,16 +46,12 @@ const dislikeItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND_ERROR).send({ message: "Item not found" });
+        next(new NotFoundError("Item not found"));
+      } else if (err.name === "CastError") {
+        next(new BadRequestError("Invalid item ID"));
+      } else {
+        next(err);
       }
-      if (err.name === "CastError") {
-        return res
-          .status(INVALID_DATA_ERROR)
-          .send({ message: "Invalid item ID" });
-      }
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
     });
 };
 

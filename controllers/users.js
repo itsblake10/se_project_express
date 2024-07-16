@@ -2,13 +2,17 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const { JWT_SECRET } = require("../utils/config");
-const {
-  INVALID_DATA_ERROR,
-  NOT_FOUND_ERROR,
-  SERVER_ERROR,
-  UNAUTHORIZED_ERROR,
-  CONFLICT_ERROR,
-} = require("../utils/errors");
+// const {
+//   INVALID_DATA_ERROR,
+//   NOT_FOUND_ERROR,
+//   SERVER_ERROR,
+//   UNAUTHORIZED_ERROR,
+//   CONFLICT_ERROR,
+// } = require("../utils/errors");
+const BadRequestError = require("../utils/errors/bad-request-error");
+const ConflictError = require("../utils/errors/conflict-error");
+const UnauthorizedError = require("../utils/errors/unauthorized-error");
+const NotFoundError = require("../utils/errors/not-found-error");
 
 // Create a new user
 const createUser = (req, res) => {
@@ -26,7 +30,7 @@ const createUser = (req, res) => {
     )
     .then((newUser) => {
       if (!newUser) {
-        throw new Error("Email already exists");
+        next(new ConflictError("Email already exists"));
       }
       const { password, ...userWithoutPassword } = newUser.toObject();
       res.status(201).json(userWithoutPassword);
@@ -34,18 +38,12 @@ const createUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.code === 11000 || err.message === "Email already exists") {
-        return res
-          .status(CONFLICT_ERROR)
-          .json({ message: "Email already exists" });
+        next(new ConflictError("Email already exists"));
       }
       if (err.name === "ValidationError") {
-        return res
-          .status(INVALID_DATA_ERROR)
-          .json({ message: "Invalid data provided" });
+        next(new BadRequestError("Invalid data provided"));
       }
-      return res
-        .status(SERVER_ERROR)
-        .json({ message: "An error has occurred on the server" });
+      next(err);
     });
 };
 
@@ -63,25 +61,17 @@ const login = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.message === "Email does not exist") {
-        return res
-          .status(UNAUTHORIZED_ERROR)
-          .json({ message: "Email does not exist" });
+        next(new UnauthorizedError("Email does not exist"));
       }
 
       if (err.message === "Not a valid password") {
-        return res
-          .status(INVALID_DATA_ERROR)
-          .json({ message: "Not a valid password" });
+        next(new BadRequestError("Not a valid password"));
       }
 
       if (err.message === "Incorrect email or password") {
-        return res
-          .status(UNAUTHORIZED_ERROR)
-          .json({ message: "Incorrect email or password" });
+        next(new UnauthorizedError("Incorrect email or password"));
       }
-      return res
-        .status(SERVER_ERROR)
-        .json({ message: "An error has occurred on the server" });
+      next(err);
     });
 };
 
@@ -93,15 +83,13 @@ const getCurrentUser = (req, res) => {
     .orFail()
     .then((user) => {
       if (!user) {
-        return res.status(NOT_FOUND_ERROR).send({ message: "User not found" });
+        next(new NotFoundError("User not found"));
       }
       return res.json(user);
     })
     .catch((err) => {
       console.error(err);
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
+      next(err);
     });
 };
 
@@ -122,20 +110,16 @@ const updateUserProfile = (req, res) => {
     .orFail()
     .then((updatedUser) => {
       if (!updatedUser) {
-        return res.status(NOT_FOUND_ERROR).send({ message: "User not found" });
+        next(new NotFoundError("User not found"));
       }
       return res.json(updatedUser);
     })
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res
-          .status(INVALID_DATA_ERROR)
-          .send({ message: "Invalid data provided" });
+        next(new BadRequestError("User not found"));
       }
-      return res
-        .status(SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
+      next(err);
     });
 };
 

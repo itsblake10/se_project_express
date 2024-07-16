@@ -1,3 +1,4 @@
+// NEW (ES LINT RULE)
 module.exports = {
   env: {
     browser: true,
@@ -6,6 +7,7 @@ module.exports = {
   },
   rules: {
     "no-underscore-dangle": ["error", { allow: ["_id"] }],
+    "no-unused-vars": ["error", { argsIgnorePattern: "next" }],
   },
   extends: ["eslint:recommended", "airbnb-base", "prettier"],
   overrides: [],
