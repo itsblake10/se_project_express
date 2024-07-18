@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 
 const cors = require("cors");
 
+const { errors } = require("celebrate");
+
 const { login, createUser } = require("./controllers/users");
 
 const router = require("./routes");
@@ -27,6 +29,9 @@ app.post("/signin", login);
 app.post("/signup", createUser);
 
 app.use("/", router);
+
+// NEW
+app.use(errors());
 
 // NEW
 app.use(errorHandler.errorHandler);
