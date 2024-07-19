@@ -6,6 +6,8 @@ const cors = require("cors");
 
 const { errors } = require("celebrate");
 
+const { errorLogger } = require("express-winston");
+
 const { login, createUser } = require("./controllers/users");
 
 const router = require("./routes");
@@ -14,6 +16,7 @@ const app = express();
 
 // NEW
 const errorHandler = require("./middlewares/error-handler");
+const { requestLogger } = require("./middlewares/logger");
 
 const { PORT = 3001 } = process.env;
 
@@ -23,12 +26,17 @@ app.use(express.json());
 
 app.use(cors());
 
+// NEW
+app.use(requestLogger);
+
 // Login and Signup Routes
 app.post("/signin", login);
 
 app.post("/signup", createUser);
 
 app.use("/", router);
+
+app.use(errorLogger);
 
 // NEW
 app.use(errors());
