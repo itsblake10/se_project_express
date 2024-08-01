@@ -25,6 +25,7 @@ The backend for the WTWR (What to Wear?) web application which is designed to he
 - **Testing:** Testing is done using Postman and Github actions
 - **Git:** Version control system for tracking changes to the project codebase.
 - **Postman:** API development and testing tool for manually testing API endpoints during development.
+- **Google Cloud:** Cloud platform for deploying and managing the website.
 
 ## API Documentation
 
@@ -45,7 +46,7 @@ This project has been tested using Postman and Github actions
 
 ## LINK TO PROECT
 
-https://github.com/itsblake10/se_project_express
+https://blakesdomain.crabdance.com
 
 ## Credit
 
