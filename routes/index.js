@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { NOT_FOUND_ERROR } = require("../utils/errors");
+const { NotFoundError } = require("../utils/errors/not-found-error");
 
 const router = express.Router();
 
@@ -17,8 +17,8 @@ router.use("/", clothingItems);
 router.use("/", likes);
 
 // Handle non-existent resource
-router.use((req, res) => {
-  res.status(NOT_FOUND_ERROR).json({ message: "Requested resource not found" });
-});
+router.use((req, res, next) =>
+  next(new NotFoundError("Requested resource not found")),
+);
 
 module.exports = router;
