@@ -11,7 +11,7 @@ const { errors } = require("celebrate");
 
 const { errorLogger } = require("express-winston");
 
-const { celebrate } = require("celebrate");
+// const { celebrate } = require("celebrate");
 
 const { login, createUser } = require("./controllers/users");
 
@@ -43,9 +43,9 @@ app.use(requestLogger);
 
 // NEW
 // Login and Signup Routes
-app.post("/signin", celebrate(validateLogin), login);
+app.post("/signin", validateLogin, login);
 
-app.post("/signup", celebrate(validateUser), createUser);
+app.post("/signup", validateUser, createUser);
 
 app.use("/", router);
 

@@ -1,6 +1,6 @@
 const express = require("express");
 
-const { NotFoundError } = require("../utils/errors/not-found-error");
+const NotFoundError = require("../utils/errors/not-found-error");
 
 const router = express.Router();
 

@@ -24,9 +24,8 @@ const createNewClothingItem = (req, res, next) => {
       console.error(err);
       if (err.name === "ValidationError") {
         return next(new BadRequestError("Invalid data provided"));
-      } else {
-        return next(err);
       }
+      return next(err);
     });
 };
 
