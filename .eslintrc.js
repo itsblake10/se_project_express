@@ -1,4 +1,3 @@
-// NEW (ES LINT RULE)
 module.exports = {
   env: {
     browser: true,

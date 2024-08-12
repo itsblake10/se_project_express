@@ -1,4 +1,3 @@
-// NEW
 require("dotenv").config();
 
 const express = require("express");
@@ -10,8 +9,6 @@ const cors = require("cors");
 const { errors } = require("celebrate");
 
 const { errorLogger } = require("express-winston");
-
-// const { celebrate } = require("celebrate");
 
 const { login, createUser } = require("./controllers/users");
 
@@ -25,7 +22,6 @@ app.get("/crash-test", () => {
   }, 0);
 });
 
-// NEW
 const errorHandler = require("./middlewares/error-handler");
 const { requestLogger } = require("./middlewares/logger");
 const { validateLogin, validateUser } = require("./middlewares/validation");
@@ -38,10 +34,8 @@ app.use(express.json());
 
 app.use(cors());
 
-// NEW
 app.use(requestLogger);
 
-// NEW
 // Login and Signup Routes
 app.post("/signin", validateLogin, login);
 
@@ -51,10 +45,8 @@ app.use("/", router);
 
 app.use(errorLogger);
 
-// NEW
 app.use(errors());
 
-// NEW
 app.use(errorHandler.errorHandler);
 
 app.listen(PORT, () => {

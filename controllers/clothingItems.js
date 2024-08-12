@@ -1,4 +1,3 @@
-// NEW (ERROR HANDLING)
 const mongoose = require("mongoose");
 const ClothingItem = require("../models/clothingItem");
 const BadRequestError = require("../utils/errors/bad-request-error");

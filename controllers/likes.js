@@ -1,4 +1,3 @@
-// NEW
 const ClothingItem = require("../models/clothingItem");
 const NotFoundError = require("../utils/errors/not-found-error");
 const BadRequestError = require("../utils/errors/bad-request-error");
